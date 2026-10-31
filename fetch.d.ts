@@ -1,209 +1,55 @@
-// based on https://github.com/Ethan-Arrowood/undici-fetch/blob/249269714db874351589d2d364a0645d5160ae71/index.d.ts (MIT license)
-// and https://github.com/node-fetch/node-fetch/blob/914ce6be5ec67a8bab63d68510aabf07cb818b6d/index.d.ts (MIT license)
-/// <reference types="node" />
+export {};
 
-import { Blob } from 'buffer'
-import { URL, URLSearchParams } from 'url'
-import { ReadableStream } from 'stream/web'
-import { FormData } from './formdata'
+import * as undici from "undici-types";
 
-import Dispatcher from './dispatcher'
+type _EventSource = typeof globalThis extends { onmessage: any } ? {} : undici.EventSource;
+type _EventSourceInit = typeof globalThis extends { onmessage: any } ? {} : undici.EventSourceInit;
+type _FormData = typeof globalThis extends { onmessage: any } ? {} : undici.FormData;
+type _Headers = typeof globalThis extends { onmessage: any } ? {} : undici.Headers;
+type _MessageEvent = typeof globalThis extends { onmessage: any } ? {} : undici.MessageEvent;
+type _MessageEventInit = typeof globalThis extends { onmessage: any } ? {} : undici.MessageEventInit;
+type _Request = typeof globalThis extends { onmessage: any } ? {} : undici.Request;
+type _RequestInit = typeof globalThis extends { onmessage: any } ? {} : undici.RequestInit;
+type _Response = typeof globalThis extends { onmessage: any } ? {} : undici.Response;
+type _ResponseInit = typeof globalThis extends { onmessage: any } ? {} : undici.ResponseInit;
+type _WebSocket = typeof globalThis extends { onmessage: any } ? {} : undici.WebSocket;
+type _WebSocketInit = typeof globalThis extends { onmessage: any } ? {} : undici.WebSocketInit;
 
-export type RequestInfo = string | URL | Request
+declare global {
+    function fetch(
+        input: string | URL | Request,
+        init?: RequestInit,
+    ): Promise<Response>;
 
-export declare function fetch (
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<Response>
+    interface EventSource extends _EventSource {}
+    var EventSource: typeof globalThis extends { onmessage: any; EventSource: infer T } ? T : typeof undici.EventSource;
 
-export type BodyInit =
-  | ArrayBuffer
-  | AsyncIterable<Uint8Array>
-  | Blob
-  | FormData
-  | Iterable<Uint8Array>
-  | NodeJS.ArrayBufferView
-  | URLSearchParams
-  | null
-  | string
+    interface EventSourceInit extends _EventSourceInit {}
 
-export class BodyMixin {
-  readonly body: ReadableStream | null
-  readonly bodyUsed: boolean
+    interface FormData extends _FormData {}
+    var FormData: typeof globalThis extends { onmessage: any; FormData: infer T } ? T : typeof undici.FormData;
 
-  readonly arrayBuffer: () => Promise<ArrayBuffer>
-  readonly blob: () => Promise<Blob>
-  /**
-   * @deprecated This method is not recommended for parsing multipart/form-data bodies in server environments.
-   * It is recommended to use a library such as [@fastify/busboy](https://www.npmjs.com/package/@fastify/busboy) as follows:
-   * 
-   * @example
-   * ```js
-   * import { Busboy } from '@fastify/busboy'
-   * import { Readable } from 'node:stream'
-   * 
-   * const response = await fetch('...')
-   * const busboy = new Busboy({ headers: { 'content-type': response.headers.get('content-type') } })
-   * 
-   * // handle events emitted from `busboy`
-   * 
-   * Readable.fromWeb(response.body).pipe(busboy)
-   * ```
-   */
-  readonly formData: () => Promise<FormData>
-  readonly json: () => Promise<unknown>
-  readonly text: () => Promise<string>
-}
+    interface Headers extends _Headers {}
+    var Headers: typeof globalThis extends { onmessage: any; Headers: infer T } ? T : typeof undici.Headers;
 
-export interface SpecIterator<T, TReturn = any, TNext = undefined> {
-  next(...args: [] | [TNext]): IteratorResult<T, TReturn>;
-}
+    interface MessageEvent extends _MessageEvent {}
+    var MessageEvent: typeof globalThis extends { onmessage: any; MessageEvent: infer T } ? T
+        : typeof undici.MessageEvent;
 
-export interface SpecIterableIterator<T> extends SpecIterator<T> {
-  [Symbol.iterator](): SpecIterableIterator<T>;
-}
+    interface MessageEventInit extends _MessageEventInit {}
 
-export interface SpecIterable<T> {
-  [Symbol.iterator](): SpecIterator<T>;
-}
+    interface Request extends _Request {}
+    var Request: typeof globalThis extends { onmessage: any; Request: infer T } ? T : typeof undici.Request;
 
-export type HeadersInit = string[][] | Record<string, string | ReadonlyArray<string>> | Headers
+    interface RequestInit extends _RequestInit {}
 
-export declare class Headers implements SpecIterable<[string, string]> {
-  constructor (init?: HeadersInit)
-  readonly append: (name: string, value: string) => void
-  readonly delete: (name: string) => void
-  readonly get: (name: string) => string | null
-  readonly has: (name: string) => boolean
-  readonly set: (name: string, value: string) => void
-  readonly getSetCookie: () => string[]
-  readonly forEach: (
-    callbackfn: (value: string, key: string, iterable: Headers) => void,
-    thisArg?: unknown
-  ) => void
+    interface Response extends _Response {}
+    var Response: typeof globalThis extends { onmessage: any; Response: infer T } ? T : typeof undici.Response;
 
-  readonly keys: () => SpecIterableIterator<string>
-  readonly values: () => SpecIterableIterator<string>
-  readonly entries: () => SpecIterableIterator<[string, string]>
-  readonly [Symbol.iterator]: () => SpecIterableIterator<[string, string]>
-}
+    interface ResponseInit extends _ResponseInit {}
 
-export type RequestCache =
-  | 'default'
-  | 'force-cache'
-  | 'no-cache'
-  | 'no-store'
-  | 'only-if-cached'
-  | 'reload'
+    interface WebSocket extends _WebSocket {}
+    var WebSocket: typeof globalThis extends { onmessage: any; WebSocket: infer T } ? T : typeof undici.WebSocket;
 
-export type RequestCredentials = 'omit' | 'include' | 'same-origin'
-
-type RequestDestination =
-  | ''
-  | 'audio'
-  | 'audioworklet'
-  | 'document'
-  | 'embed'
-  | 'font'
-  | 'image'
-  | 'manifest'
-  | 'object'
-  | 'paintworklet'
-  | 'report'
-  | 'script'
-  | 'sharedworker'
-  | 'style'
-  | 'track'
-  | 'video'
-  | 'worker'
-  | 'xslt'
-
-export interface RequestInit {
-  method?: string
-  keepalive?: boolean
-  headers?: HeadersInit
-  body?: BodyInit | null
-  redirect?: RequestRedirect
-  integrity?: string
-  signal?: AbortSignal | null
-  credentials?: RequestCredentials
-  mode?: RequestMode
-  referrer?: string
-  referrerPolicy?: ReferrerPolicy
-  window?: null
-  dispatcher?: Dispatcher
-  duplex?: RequestDuplex
-}
-
-export type ReferrerPolicy =
-  | ''
-  | 'no-referrer'
-  | 'no-referrer-when-downgrade'
-  | 'origin'
-  | 'origin-when-cross-origin'
-  | 'same-origin'
-  | 'strict-origin'
-  | 'strict-origin-when-cross-origin'
-  | 'unsafe-url';
-
-export type RequestMode = 'cors' | 'navigate' | 'no-cors' | 'same-origin'
-
-export type RequestRedirect = 'error' | 'follow' | 'manual'
-
-export type RequestDuplex = 'half'
-
-export declare class Request extends BodyMixin {
-  constructor (input: RequestInfo, init?: RequestInit)
-
-  readonly cache: RequestCache
-  readonly credentials: RequestCredentials
-  readonly destination: RequestDestination
-  readonly headers: Headers
-  readonly integrity: string
-  readonly method: string
-  readonly mode: RequestMode
-  readonly redirect: RequestRedirect
-  readonly referrer: string
-  readonly referrerPolicy: ReferrerPolicy
-  readonly url: string
-
-  readonly keepalive: boolean
-  readonly signal: AbortSignal
-  readonly duplex: RequestDuplex
-
-  readonly clone: () => Request
-}
-
-export interface ResponseInit {
-  readonly status?: number
-  readonly statusText?: string
-  readonly headers?: HeadersInit
-}
-
-export type ResponseType =
-  | 'basic'
-  | 'cors'
-  | 'default'
-  | 'error'
-  | 'opaque'
-  | 'opaqueredirect'
-
-export type ResponseRedirectStatus = 301 | 302 | 303 | 307 | 308
-
-export declare class Response extends BodyMixin {
-  constructor (body?: BodyInit, init?: ResponseInit)
-
-  readonly headers: Headers
-  readonly ok: boolean
-  readonly status: number
-  readonly statusText: string
-  readonly type: ResponseType
-  readonly url: string
-  readonly redirected: boolean
-
-  readonly clone: () => Response
-
-  static error (): Response
-  static json(data: any, init?: ResponseInit): Response
-  static redirect (url: string | URL, status: ResponseRedirectStatus): Response
+    interface WebSocketInit extends _WebSocketInit {}
 }
