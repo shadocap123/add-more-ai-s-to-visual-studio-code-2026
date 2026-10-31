@@ -1,0 +1,44 @@
+{
+  "name": "any-ai-provider",
+  "displayName": "Any AI Provider",
+  "description": "Use OpenAI-compatible, Anthropic, and Google Gemini models in VS Code Chat.",
+  "version": "0.1.0",
+  "publisher": "local-dev",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "AI"
+  ],
+  "activationEvents": [
+    "onLanguageModelChatProvider:local-dev-any-ai-provider",
+    "onCommand:any-ai-provider.manage"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "any-ai-provider.manage",
+        "title": "Any AI Provider: Manage Providers"
+      }
+    ],
+    "languageModelChatProviders": [
+      {
+        "vendor": "local-dev-any-ai-provider",
+        "displayName": "Any AI Provider",
+        "managementCommand": "any-ai-provider.manage"
+      }
+    ]
+  },
+  "license": "MIT",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/vscode": "^1.101.0",
+    "typescript": "^5.8.3"
+  }
+}
